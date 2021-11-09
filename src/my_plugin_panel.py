@@ -4,7 +4,7 @@ import bmesh
 import mathutils
 import random
 
-from .erosions import erosion
+from .erosions import thermal_erosion
 
 
 class CreateTerrainOperator(bpy.types.Operator):
@@ -147,7 +147,7 @@ class ThermalErosionOperator(bpy.types.Operator):
         my_bmesh.from_mesh(active_mesh)
 
         # Erosion
-        erosion.basic_thermal_erosion(my_bmesh)
+        thermal_erosion.basic_thermal_erosion(my_bmesh)
 
         my_bmesh.to_mesh(active_mesh)
         my_bmesh.free()

@@ -3,9 +3,9 @@ from bpy.props import FloatProperty
 import bmesh
 import random
 
+from ..properties.erosion_properties import ErosionProperties
 from ..operators.create_terrain_operator import CreateTerrainOperator
-from ..operators.thermal_erosion_operator import ThermalErosionOperator
-from ..operators.hydraulic_erosion_operator import HydraulicErosionOperator
+from ..operators.erosion_operator import ErosionOperator
 
 from .erosion_panel import ErosionPanel
 
@@ -105,34 +105,16 @@ class MyPluginPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("object.create_terrain_operator")
 
-        # row = layout.row()
-        # row.label(text="Displacement")
-        #
-        # obj = context.active_object
-        # if obj is None:
-        #     return
-        #
-        # obj_properties = obj.my_obj_props
-        #
-        # row = layout.row()
-        # row.prop(obj_properties, "displacement")
-        #
-        # layout.separator()
-        #
-        # row = layout.row()
-        # row.operator("object.update_terrain_operator")
-        #
-        # row = layout.row()
-        # row.operator("object.animate_object_operator")
+        if len(context.selected_objects) <= 0:
+            return
+        obj = context.selected_objects[0]
+        properties = obj.erosion_properties
 
         row = layout.row()
         row.operator("object.wiggle_object_operator")
 
-        # row = layout.row()
-        # row.operator("object.thermal_erosion_operator")
-        #
-        # row = layout.row()
-        # row.operator("object.hydraulic_erosion_operator")
+        row = layout.row()
+        row.prop(properties, "my_property")
 
 
 class MyObjectPropertiesGroup(bpy.types.PropertyGroup):
@@ -142,13 +124,13 @@ class MyObjectPropertiesGroup(bpy.types.PropertyGroup):
 
 # Classes inheriting from Blender that need to be (de-)activated
 classes = (
+    ErosionProperties,
     MyObjectPropertiesGroup,
     CreateTerrainOperator,
     UpdateTerrainOperator,
     AnimateObjectOperator,
     WiggleObjectOperator,
-    ThermalErosionOperator,
-    HydraulicErosionOperator,
+    ErosionOperator,
     MyPluginPanel,
     ErosionPanel
 )

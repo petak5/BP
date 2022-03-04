@@ -11,11 +11,54 @@ class ErosionPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        row = layout.row()
-        row.label(text="Erode terrain")
+        if len(context.selected_objects) <= 0:
+            return
+        obj = context.selected_objects[0]
+        properties = obj.erosion_properties
+
+        # row = layout.row()
+        # row.label(text="Erode terrain")
 
         row = layout.row()
-        row.operator("object.thermal_erosion_operator")
+        row.prop(properties, "erosion_method")
 
-        row = layout.row()
-        row.operator("object.hydraulic_erosion_operator")
+        layout.separator()
+
+        # Thermal erosion
+        if properties.erosion_method == "THERMAL":
+            row = layout.row()
+            row.prop(properties, "th_iterations")
+
+            row = layout.row()
+            row.prop(properties, "th_max_slope")
+
+            row = layout.row()
+            row.prop(properties, "th_erosion_strength")
+
+            layout.separator()
+
+            row = layout.row()
+            row.operator("object.erosion_operator")
+        # Hydraulic erosion
+        else:
+            layout.separator()
+
+            row = layout.row()
+            row.prop(properties, "hy_iterations")
+
+            row = layout.row()
+            row.prop(properties, "hy_rain_intensity")
+
+            row = layout.row()
+            row.prop(properties, "hy_soil_solubility")
+
+            row = layout.row()
+            row.prop(properties, "hy_evaporation_intensity")
+
+            row = layout.row()
+            row.prop(properties, "hy_sediment_capacity")
+
+            layout.separator()
+
+            row = layout.row()
+            row.operator("object.erosion_operator")

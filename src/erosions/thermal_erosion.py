@@ -4,8 +4,15 @@ from math import sqrt
 from datetime import datetime
 from .tools import edge_get_neighbour_vertex
 
+
+class ThermalErosionSettings:
+    iterations: int
+    max_slope: float
+    erosion_strength: float
+
+
 # `ctrl+a -> scale` to apply scale transformation before calling this function
-def thermal_erosion(mesh: BMesh):
+def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings):
     start_time = datetime.now()
 
     mesh.verts.ensure_lookup_table()
@@ -22,10 +29,12 @@ def thermal_erosion(mesh: BMesh):
     # N = 50
     # Talus threshold
     # T = 4/N
-    T = 0.3
-    C = 0.001
+    # T = 0.3
+    # C = 0.001
+    T = settings.max_slope / 100
+    C = settings.erosion_strength
 
-    iterations = 100
+    iterations = settings.iterations
 
     for iteration in range(iterations):
 

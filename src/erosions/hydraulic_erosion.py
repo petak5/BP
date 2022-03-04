@@ -1,29 +1,48 @@
+import bmesh.types
 from bmesh.types import BMesh
 import numpy as np
 from .tools import edge_get_neighbour_vertex
 from datetime import datetime
 
+
+class HydraulicErosionSettings:
+    iterations: int
+    rain_intensity: float
+    soil_solubility: float
+    evaporation_intensity: float
+    sediment_capacity: float
+
+
 # `ctrl+a -> scale` to apply scale transformation before calling this function
-def hydraulic_erosion(mesh: BMesh):
+def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings):
     start_time = datetime.now()
 
     mesh.verts.ensure_lookup_table()
 
+    # # Constant amount of water that falls on a cell every iteration to simulate rain
+    # K_r = 0.01
+    # # Solubility constant of the terrain
+    # K_s = 0.01
+    # # Evaporation coefficient
+    # K_e = 0.5
+    # # Sediment capacity coefficient
+    # K_c = 0.01
+
     # Constant amount of water that falls on a cell every iteration to simulate rain
-    K_r = 0.01
+    K_r = settings.rain_intensity
     # Solubility constant of the terrain
-    K_s = 0.01
+    K_s = settings.soil_solubility
     # Evaporation coefficient
-    K_e = 0.5
+    K_e = settings.evaporation_intensity / 100
     # Sediment capacity coefficient
-    K_c = 0.01
+    K_c = settings.sediment_capacity / 100
 
     # Water map
     w = np.zeros(len(mesh.verts), dtype=float)
     # Sediment map
     m = np.zeros(len(mesh.verts), dtype=float)
 
-    iterations = 200
+    iterations = settings.iterations
 
     # Iterations
     for iteration in range(iterations):

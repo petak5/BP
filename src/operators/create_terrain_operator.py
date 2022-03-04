@@ -5,6 +5,7 @@ import mathutils
 class CreateTerrainOperator(bpy.types.Operator):
     bl_label = "Create Terrain"
     bl_idname = "object.create_terrain_operator"
+    bl_description = "Description"
 
     def execute(self, context):
         self.create_terrain(context)

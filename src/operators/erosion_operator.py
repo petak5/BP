@@ -15,17 +15,18 @@ class ErosionOperator(bpy.types.Operator):
         return context.selected_objects and context.edit_object is None
 
     def execute(self, context):
-        self.erode(context)
+        self.main(context)
         return {'FINISHED'}
 
-    def erode(self, context):
+    def main(self, context: bpy.types.Context):
+        obj: bpy.types.Object = context.active_object
+        scene = context.scene
 
-        obj = context.active_object
         active_mesh = obj.data
         my_bmesh = bmesh.new()
         my_bmesh.from_mesh(active_mesh)
 
-        properties: ErosionProperties = obj.erosion_properties
+        properties: ErosionProperties = scene.erosion_properties
 
         # Thermal erosion
         if properties.erosion_method == "THERMAL":
@@ -43,6 +44,15 @@ class ErosionOperator(bpy.types.Operator):
             settings.soil_solubility = properties.hy_soil_solubility
             settings.evaporation_intensity = properties.hy_evaporation_intensity
             settings.sediment_capacity = properties.hy_sediment_capacity
+            if properties.use_vertex_groups:
+                # Source: https://blender.stackexchange.com/a/75240 (https://blender.stackexchange.com/questions/75223/finding-vertices-in-a-vertex-group-using-blenders-python-api)
+                # vg_idx = obj.vertex_groups.active_index
+                # indices: list[int] = [ v.index for v in obj.data.vertices if vg_idx in [ vg.group for vg in v.groups ] ]
+                indices: list[int] = []
+                for v in obj.data.vertices:
+                    if len(v.groups) > 0:
+                        indices.append(v.index)
+                settings.selected_vertex_indices = indices
 
             hydraulic_erosion(my_bmesh, settings)
 

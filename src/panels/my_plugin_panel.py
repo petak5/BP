@@ -1,5 +1,4 @@
 import bpy
-from bpy.props import FloatProperty
 import bmesh
 import random
 
@@ -8,34 +7,6 @@ from ..operators.create_terrain_operator import CreateTerrainOperator
 from ..operators.erosion_operator import ErosionOperator
 
 from .erosion_panel import ErosionPanel
-
-class UpdateTerrainOperator(bpy.types.Operator):
-    bl_label = "Update Terrain"
-    bl_idname = "object.update_terrain_operator"
-
-    @classmethod
-    def poll(cls, context):
-        return context.active_object is not None
-
-    def execute(self, context):
-        self.update_terrain(context)
-        return {'FINISHED'}
-
-    def update_terrain(self, context):
-        active_obj = context.active_object
-        active_mesh = active_obj.data
-        my_bmesh = bmesh.new()
-        my_bmesh.from_mesh(active_mesh)
-
-        obj_properties = active_obj.my_obj_props
-
-        for v in my_bmesh.verts:
-            v.co.z *= obj_properties.displacement / obj_properties.old_displacement
-
-        obj_properties.old_displacement = obj_properties.displacement
-
-        my_bmesh.to_mesh(active_mesh)
-        my_bmesh.free()
 
 
 class AnimateObjectOperator(bpy.types.Operator):
@@ -73,7 +44,6 @@ class WiggleObjectOperator(bpy.types.Operator):
         return {'FINISHED'}
 
     def wiggle_object(self, context):
-
         active_obj = context.active_object
         active_mesh = active_obj.data
         my_bmesh = bmesh.new()
@@ -107,27 +77,15 @@ class MyPluginPanel(bpy.types.Panel):
 
         if len(context.selected_objects) <= 0:
             return
-        obj = context.selected_objects[0]
-        properties = obj.erosion_properties
 
         row = layout.row()
         row.operator("object.wiggle_object_operator")
-
-        row = layout.row()
-        row.prop(properties, "my_property")
-
-
-class MyObjectPropertiesGroup(bpy.types.PropertyGroup):
-    displacement: FloatProperty(name="Displacement", default=1, min=0.1, max=10, description="A description of displacement property")
-    old_displacement: FloatProperty(name="Old Displacement", default=1, min=0.1, max=10, description="A description of old displacement property")
 
 
 # Classes inheriting from Blender that need to be (de-)activated
 classes = (
     ErosionProperties,
-    MyObjectPropertiesGroup,
     CreateTerrainOperator,
-    UpdateTerrainOperator,
     AnimateObjectOperator,
     WiggleObjectOperator,
     ErosionOperator,

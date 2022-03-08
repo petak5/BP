@@ -8,21 +8,24 @@ class ErosionPanel(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = "Erosion"
 
-    def draw(self, context):
+    def draw(self, context: bpy.types.Context):
         layout = self.layout
 
         if len(context.selected_objects) <= 0:
+            row = layout.row()
+            row.label(text="Select an object for erosion")
             return
         obj = context.selected_objects[0]
-        properties = obj.erosion_properties
-
-        # row = layout.row()
-        # row.label(text="Erode terrain")
+        scene = context.scene
+        properties = scene.erosion_properties
 
         row = layout.row()
         row.prop(properties, "erosion_method")
 
         layout.separator()
+
+        # Name of the operator for selected erosion method
+        method_operator_name = ""
 
         # Thermal erosion
         if properties.erosion_method == "THERMAL":
@@ -35,10 +38,7 @@ class ErosionPanel(bpy.types.Panel):
             row = layout.row()
             row.prop(properties, "th_erosion_strength")
 
-            layout.separator()
-
-            row = layout.row()
-            row.operator("object.erosion_operator")
+            method_operator_name = "object.erosion_operator"
         # Hydraulic erosion
         else:
             layout.separator()
@@ -58,7 +58,14 @@ class ErosionPanel(bpy.types.Panel):
             row = layout.row()
             row.prop(properties, "hy_sediment_capacity")
 
-            layout.separator()
-
             row = layout.row()
-            row.operator("object.erosion_operator")
+            row.prop(properties, "use_vertex_groups")
+            if properties.use_vertex_groups:
+                layout.template_list("UI_UL_list", "my_custom_id", obj, "vertex_groups", obj.vertex_groups, "active_index")
+
+            method_operator_name = "object.erosion_operator"
+
+        layout.separator()
+
+        row = layout.row()
+        row.operator(method_operator_name)

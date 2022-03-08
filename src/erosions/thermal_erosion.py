@@ -1,3 +1,4 @@
+import bpy
 from bmesh.types import BMesh
 import numpy as np
 from math import sqrt
@@ -36,7 +37,7 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings):
 
     iterations = settings.iterations
 
-    for iteration in range(iterations):
+    for _ in range(iterations):
 
         delta = np.zeros(len(mesh.verts), dtype=float)
 

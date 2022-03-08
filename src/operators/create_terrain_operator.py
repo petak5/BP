@@ -11,13 +11,11 @@ class CreateTerrainOperator(bpy.types.Operator):
         self.create_terrain(context)
         return {'FINISHED'}
 
-    def create_terrain(self, context):
-        new_mesh = bpy.data.meshes.new("MyMesh")
-        new_obj = bpy.data.objects.new("NewObject", new_mesh)
-        new_collection = bpy.data.collections.new("NewCollection")
+    def create_terrain(self, context: bpy.types.Context):
+        new_mesh = bpy.data.meshes.new("New Terrain Mesh")
+        new_obj = bpy.data.objects.new("New Terrain", new_mesh)
 
-        bpy.context.scene.collection.children.link(new_collection)
-        new_collection.objects.link(new_obj)
+        context.scene.collection.objects.link(new_obj)
 
         vertices = []
         polygons = []
@@ -41,7 +39,5 @@ class CreateTerrainOperator(bpy.types.Operator):
                     # print(f"i = {i}, j = {j}, offset = {offset}")
                     polygons.append([offset - grid_size - 1, offset - 1, offset - grid_size])
                     polygons.append([offset - 1, offset - grid_size, offset])
-
-        new_obj.my_obj_props.old_displacement = bump_intensity
 
         new_mesh.from_pydata(vertices, [], polygons)

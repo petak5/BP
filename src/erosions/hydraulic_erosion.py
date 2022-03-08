@@ -1,5 +1,5 @@
-import bmesh.types
-from bmesh.types import BMesh
+import bpy
+from bmesh.types import BMesh, BMVert
 import numpy as np
 from .tools import edge_get_neighbour_vertex
 from datetime import datetime
@@ -11,6 +11,8 @@ class HydraulicErosionSettings:
     soil_solubility: float
     evaporation_intensity: float
     sediment_capacity: float
+    # Indices of selected vertices of vertex groups (if this option is selected)
+    selected_vertex_indices: list[int] = None
 
 
 # `ctrl+a -> scale` to apply scale transformation before calling this function
@@ -45,11 +47,15 @@ def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings):
     iterations = settings.iterations
 
     # Iterations
-    for iteration in range(iterations):
+    for _ in range(iterations):
 
         # Step 1
         # Rain fall
-        w += K_r
+        if settings.selected_vertex_indices is None:
+            w += K_r
+        else:
+            for index in settings.selected_vertex_indices:
+                w[index] += K_r
 
         # Step 2
         # Erode material and convert it to sediment

@@ -1,10 +1,4 @@
-import bpy
-from bpy.props import PointerProperty
-
-from .panels.my_plugin_panel import classes
-from .properties.erosion_properties import ErosionProperties
-
-
+# bl_info has to be defined here, otherwise the plugin won't show in settings
 bl_info = {
     "name": "Eroder",
     "author": "Peter Urgos",
@@ -16,16 +10,28 @@ bl_info = {
 }
 
 
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-    bpy.types.Scene.erosion_properties = PointerProperty(type=ErosionProperties, name="Erosion Properties", description="Properties of erosion")
+from multiprocessing import current_process
+if current_process().name != "MainProcess":
+    from .erosions.thermal_erosion_method import do_stuff, calculate_erosion
+else:
+    print("Executing...")
+    import bpy
+    from bpy.props import PointerProperty
+
+    from .panels.my_plugin_panel import classes
+    from .properties.erosion_properties import ErosionProperties
 
 
-def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    def register():
+        for cls in classes:
+            bpy.utils.register_class(cls)
+        bpy.types.Scene.erosion_properties = PointerProperty(type=ErosionProperties, name="Erosion Properties", description="Properties of erosion")
 
 
-if __name__ == "__main__":
-    register()
+    def unregister():
+        for cls in reversed(classes):
+            bpy.utils.unregister_class(cls)
+
+
+    if __name__ == "__main__":
+        register()

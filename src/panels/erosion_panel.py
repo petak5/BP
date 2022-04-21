@@ -1,9 +1,11 @@
 import bpy
 
+from ..properties.erosion_properties import ErosionProperties
+
 
 class ErosionPanel(bpy.types.Panel):
     bl_label = "Terrain Erosion"
-    bl_idname = "OBJECT_PT_tarrain_erosion"
+    bl_idname = "OBJECT_PT_terrain_erosion"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Erosion"
@@ -17,7 +19,7 @@ class ErosionPanel(bpy.types.Panel):
             return
         obj = context.selected_objects[0]
         scene = context.scene
-        properties = scene.erosion_properties
+        properties: ErosionProperties = scene.erosion_properties
 
         row = layout.row()
         row.prop(properties, "erosion_method")
@@ -39,8 +41,8 @@ class ErosionPanel(bpy.types.Panel):
             row.prop(properties, "th_erosion_strength")
 
             method_operator_name = "object.erosion_operator"
-        # Hydraulic erosion
-        else:
+        # Hydraulic erosion - grid based
+        elif properties.erosion_method == "HYDRAULIC":
             layout.separator()
 
             row = layout.row()
@@ -64,8 +66,32 @@ class ErosionPanel(bpy.types.Panel):
                 layout.template_list("UI_UL_list", "my_custom_id", obj, "vertex_groups", obj.vertex_groups, "active_index")
 
             method_operator_name = "object.erosion_operator"
+        # Hydraulic erosion - particle based
+        else:
+            layout.separator()
+
+            row = layout.row()
+            row.prop(properties, "hypb_rain_intensity")
+
+            row = layout.row()
+            row.prop(properties, "hypb_drop_size")
+
+            row = layout.row()
+            row.prop(properties, "hypb_drop_max_steps")
+
+            row = layout.row()
+            row.prop(properties, "hypb_drop_evaporation_intensity")
+
+            row = layout.row()
+            row.prop(properties, "hypb_erosion_strength")
+
+            method_operator_name = "object.erosion_operator"
 
         layout.separator()
 
         row = layout.row()
         row.operator(method_operator_name)
+
+        if properties.is_running:
+            row = layout.row()
+            row.prop(properties, "progress")

@@ -1,8 +1,9 @@
 import bpy
 from bmesh.types import BMesh, BMVert
 import numpy as np
-from .tools import edge_get_neighbour_vertex
 from datetime import datetime
+
+from .tools import edge_get_neighbour_vertex
 
 
 class HydraulicErosionSettings:

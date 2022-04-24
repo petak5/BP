@@ -1,12 +1,9 @@
 from math import sqrt, pow
-import bpy
-import bmesh
 import numpy as np
 from datetime import datetime
 import random
 
-from .tools import edge_get_neighbour_vertex, bmesh_to_mesh, mesh_to_bmesh
-from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z
+from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z, ErosionStatus
 
 
 class HydraulicErosionPBSettings:
@@ -21,37 +18,7 @@ class HydraulicErosionPBSettings:
     # selected_vertex_indices: list[int] = None
 
 
-def hydraulic_erosion_pb(context: bpy.types.Context, settings: HydraulicErosionPBSettings):
-    # context.area.tag_redraw()
-
-    obj: bpy.types.Object = context.active_object
-
-    active_mesh = obj.data
-    my_bmesh = bmesh.new()
-    my_bmesh.from_mesh(active_mesh)
-    my_bmesh.verts.ensure_lookup_table()
-
-    # start_time = datetime.now()
-    mesh = bmesh_to_mesh(my_bmesh)
-    # print(datetime.now() - start_time)
-
-
-    __hydraulic_erosion(mesh, settings)
-
-
-    # start_time = datetime.now()
-    mesh_to_bmesh(mesh, my_bmesh)
-    # print(datetime.now() - start_time)
-
-    my_bmesh.to_mesh(active_mesh)
-    my_bmesh.free()
-
-    context.area.tag_redraw()
-
-
-def __hydraulic_erosion(mesh: Mesh, settings: HydraulicErosionPBSettings):
-    start_time = datetime.now()
-
+def hydraulic_erosion_pb(mesh: Mesh, settings: HydraulicErosionPBSettings, erosion_status: ErosionStatus) -> Mesh:
     """ Debug """
     if True:
         temp_sum = np.sum(mesh.vertices["z"])
@@ -60,13 +27,12 @@ def __hydraulic_erosion(mesh: Mesh, settings: HydraulicErosionPBSettings):
 
     random.seed(datetime.now())
 
-
     drop_deceleration_intensity = 0.1
     drop_evaporation_intensity = settings.drop_evaporation_intensity
     erosion_strength = settings.erosion_strength
 
     drops_count = int(mesh.vertices_count * settings.rain_intensity)
-    for _ in range(drops_count):
+    for i in range(drops_count):
         drop_size = settings.drop_size
         drop_sediment = 0.0
         drop_steps_remaining = settings.drop_max_steps
@@ -113,11 +79,16 @@ def __hydraulic_erosion(mesh: Mesh, settings: HydraulicErosionPBSettings):
         # Deposit remaining sediment
         drop_position[INDEX_Z] += drop_sediment
 
+        erosion_status.progress = round(100 * i / drops_count)
+
+        # Return if stop is requested
+        if erosion_status.stop_requested:
+            return
+    erosion_status.is_running = False
+
 
     """ Debug """
     if True:
         temp_sum = np.sum(mesh.vertices["z"])
         print(f"After  = {temp_sum}")
     """ Debug end """
-
-    print(datetime.now() - start_time)

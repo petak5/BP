@@ -1,14 +1,8 @@
-import time
 import numpy as np
 from math import sqrt
 
 from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z
 
-
-def do_stuff():
-    # print("Sleeping...")
-    time.sleep(1)
-    return "Done"
 
 def calculate_erosion(mesh: Mesh, T: float, C: float) -> dict[int, float]:
     # deltas: dict[int, float] = {}   # {vertex_id, height_change}

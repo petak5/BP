@@ -3,8 +3,17 @@ from bpy.props import (
     BoolProperty,
     IntProperty,
     FloatProperty,
-    EnumProperty
+    EnumProperty,
+    StringProperty
 )
+
+
+def update_ui(self, context: bpy.types.Context):
+    region: bpy.types.Region
+    for region in context.area.regions:
+        if region.type == "UI":
+            region.tag_redraw()
+    return None
 
 
 class ErosionProperties(bpy.types.PropertyGroup):
@@ -38,7 +47,18 @@ class ErosionProperties(bpy.types.PropertyGroup):
         default=0,
         min=0,
         max=100,
-        description="Progress of the running erosion"
+        description="Progress of the running erosion",
+        update=update_ui
+    )
+    elapsed_time: StringProperty(
+        name="Elapsed Time",
+        default="",
+        description="Elapsed time of the running erosion"
+    )
+    last_time: StringProperty(
+        name="Last Time",
+        default="",
+        description="Duration of the last ran erosion"
     )
 
     ###################

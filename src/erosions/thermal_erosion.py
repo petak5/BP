@@ -8,8 +8,8 @@ import concurrent.futures
 from multiprocessing import Pool, cpu_count
 
 from .tools import edge_get_neighbour_vertex, bmesh_to_mesh, mesh_to_bmesh
-from .thermal_erosion_method import do_stuff, calculate_erosion
-from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z
+from .thermal_erosion_method import calculate_erosion
+from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z, ErosionStatus
 
 
 class ThermalErosionSettings:
@@ -19,7 +19,7 @@ class ThermalErosionSettings:
 
 
 # `ctrl+a -> scale` to apply scale transformation before calling this function
-def thermal_erosion(context: bpy.types.Context, settings: ThermalErosionSettings):
+def thermal_erosion(context: bpy.types.Context, settings: ThermalErosionSettings, erosion_status: ErosionStatus):
     obj: bpy.types.Object = context.active_object
 
     active_mesh = obj.data
@@ -31,7 +31,7 @@ def thermal_erosion(context: bpy.types.Context, settings: ThermalErosionSettings
 
     # Call func
     # _thermal_erosion(mesh, settings)
-    _thermal_erosion_old(my_bmesh, settings)
+    thermal_erosion_old(my_bmesh, settings, erosion_status)
 
     # """test"""
     # start = time.perf_counter()
@@ -62,6 +62,7 @@ def thermal_erosion(context: bpy.types.Context, settings: ThermalErosionSettings
     my_bmesh.free()
 
     context.area.tag_redraw()
+    erosion_status.is_running = False
 
 
 def _thermal_erosion(mesh: Mesh, settings: ThermalErosionSettings):
@@ -162,11 +163,7 @@ def _thermal_erosion(mesh: Mesh, settings: ThermalErosionSettings):
     print(datetime.now() - start_time)
 
 
-def _thermal_erosion_old(mesh: bmesh.types.BMesh, settings: ThermalErosionSettings):
-    start_time = datetime.now()
-
-    mesh.verts.ensure_lookup_table()
-
+def thermal_erosion_old(mesh: bmesh.types.BMesh, settings: ThermalErosionSettings, erosion_status: ErosionStatus):
     """ Debug """
     if True:
         temp_sum = 0
@@ -186,7 +183,7 @@ def _thermal_erosion_old(mesh: bmesh.types.BMesh, settings: ThermalErosionSettin
 
     iterations = settings.iterations
 
-    for _ in range(iterations):
+    for iter in range(iterations):
 
         delta = np.zeros(len(mesh.verts), dtype=float)
 
@@ -233,6 +230,10 @@ def _thermal_erosion_old(mesh: bmesh.types.BMesh, settings: ThermalErosionSettin
 
             v.co.z += delta[i]
 
+        erosion_status.progress = round(100 * iter / iterations)
+        if erosion_status.stop_requested:
+            return
+
     """ Debug """
     if True:
         temp_sum = 0
@@ -241,4 +242,4 @@ def _thermal_erosion_old(mesh: bmesh.types.BMesh, settings: ThermalErosionSettin
         print(f"After = {temp_sum}")
     """ Debug end """
 
-    print(datetime.now() - start_time)
+    erosion_status.is_running = False

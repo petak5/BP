@@ -1,9 +1,9 @@
 import bpy
 from bmesh.types import BMesh, BMVert
 import numpy as np
-from datetime import datetime
 
 from .tools import edge_get_neighbour_vertex
+from ..model.types import ErosionStatus
 
 
 class HydraulicErosionSettings:
@@ -17,9 +17,7 @@ class HydraulicErosionSettings:
 
 
 # `ctrl+a -> scale` to apply scale transformation before calling this function
-def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings):
-    start_time = datetime.now()
-
+def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings, erosion_status: ErosionStatus):
     mesh.verts.ensure_lookup_table()
 
     # # Constant amount of water that falls on a cell every iteration to simulate rain
@@ -48,7 +46,7 @@ def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings):
     iterations = settings.iterations
 
     # Iterations
-    for _ in range(iterations):
+    for iter in range(iterations):
 
         # Step 1
         # Rain fall
@@ -164,10 +162,14 @@ def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings):
             m[i] -= m_delta_2
             v.co.z += m_delta_2
 
+        erosion_status.progress = round(100 * iter / iterations)
+        if erosion_status.stop_requested:
+            return
+
     for i in range(len(mesh.verts)):
         v = mesh.verts[i]
 
         v.co.z += m[i]
         m[i] = 0
 
-    print(datetime.now() - start_time)
+    erosion_status.is_running = False

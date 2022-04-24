@@ -16,6 +16,7 @@ class Mesh:
     vertices_alloc_size: int
     edges_count = 0
 
+
     def __init__(self, preallocate_size: int = 0):
         self.vertices_count = 0
         if preallocate_size < 1:
@@ -68,3 +69,15 @@ class Mesh:
         # TODO: What's the REAL reason? Isn't it odd that I have to set only the diagonal values to False? Isn't it needed for other items in the whole 2D array?
         # When resizing this 2D array of bools, it does not set the new values to False (the desired default)
         # np.fill_diagonal(self.edges, False)
+
+
+class ErosionStatus:
+    is_running: bool
+    # signalize that the erosion (usually in other thread) should stop
+    stop_requested: bool = False
+    progress: int
+
+
+    def __init__(self, is_running: bool = False, progress: int = 0):
+        self.is_running = is_running
+        self.progress = progress

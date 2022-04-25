@@ -13,5 +13,5 @@ Blender plugin for terrain erosion
 - `cd /Users/<user>/Library/Application\ Support/Blender/<blender-version>/scripts/addons/`
 - `ln -s <path-to-terrain-eroder> terrain_eroder`
 ### Windows (cmd as Administrator)
-- `cd c:\Users\<user>\AppData\Roaming\Blender Foundation\Blender\<blender-version>\scripts\addons\`
+- `cd "c:\Users\<user>\AppData\Roaming\Blender Foundation\Blender\<blender-version>\scripts\addons\"`
 - `mklink /D terrain_eroder <path-to-terrain-eroder>`

@@ -15,11 +15,11 @@ class ErosionPanel(bpy.types.Panel):
 
         if len(context.selected_objects) <= 0:
             row = layout.row()
-            row.label(text="Select an object for erosion")
+            row.label(text="Select an object for erosion", icon="INFO")
             return
+
         obj = context.selected_objects[0]
-        scene = context.scene
-        properties: ErosionProperties = scene.erosion_properties
+        properties: ErosionProperties = context.scene.erosion_properties
 
         row = layout.row()
         row.prop(properties, "erosion_method")

@@ -54,8 +54,8 @@ class WiggleObjectOperator(bpy.types.Operator):
 
 
 class MyPluginPanel(bpy.types.Panel):
-    bl_label = "Erosion Helper"
-    bl_idname = "OBJECT_PT_erosion_helper"
+    bl_label = "Terrain Creator"
+    bl_idname = "OBJECT_PT_terrain_creator"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Eroder"

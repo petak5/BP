@@ -8,11 +8,11 @@ from .properties.erosion_properties import ErosionProperties
 
 
 bl_info = {
-    "name": "Eroder",
+    "name": "Terrain Eroder",
     "author": "Peter Urgos",
-    "version": (0, 0, 1),
+    "version": (0, 1, 0),
     "blender": (2, 93, 0),
-    "location": "View3D > Sidebar > Erosion",
+    "location": "View3D > Sidebar > Eroder",
     "description": "Add-on for terrain erosion",
     "category": "3D View"
 }

@@ -64,7 +64,7 @@ class MyPluginPanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_erosion_helper"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Erosion"
+    bl_category = "Eroder"
 
     def draw(self, context):
         layout = self.layout

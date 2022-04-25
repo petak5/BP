@@ -8,7 +8,7 @@ class ErosionPanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_terrain_erosion"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Erosion"
+    bl_category = "Eroder"
 
     def draw(self, context: bpy.types.Context):
         layout = self.layout

@@ -3,12 +3,12 @@ print("Executing __init__.py...")
 import bpy
 from bpy.props import PointerProperty
 
-from .panels.my_plugin_panel import CreatorPanel, AnimateObjectOperator
-from .panels.erosion_panel import ErosionPanel
-from .operators.create_terrain_operator import CreateTerrainOperator
-from .operators.erosion_operator import ErosionOperator
-from .properties.terrain_properties import TerrainProperties
-from .properties.erosion_properties import ErosionProperties
+from terrain_eroder.panels.creator_panel import CreatorPanel, AnimateObjectOperator
+from terrain_eroder.panels.erosion_panel import ErosionPanel
+from terrain_eroder.operators.create_terrain_operator import CreateTerrainOperator
+from terrain_eroder.operators.erosion_operator import ErosionOperator
+from terrain_eroder.properties.terrain_properties import TerrainProperties
+from terrain_eroder.properties.erosion_properties import ErosionProperties
 
 
 bl_info = {

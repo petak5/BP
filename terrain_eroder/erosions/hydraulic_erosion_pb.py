@@ -3,7 +3,7 @@ import numpy as np
 from datetime import datetime
 import random
 
-from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z, ErosionStatus
+from terrain_eroder.model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z, ErosionStatus
 
 
 class HydraulicErosionPBSettings:

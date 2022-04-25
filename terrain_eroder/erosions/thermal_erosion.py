@@ -7,9 +7,9 @@ import time
 import concurrent.futures
 from multiprocessing import Pool, cpu_count
 
-from .tools import edge_get_neighbour_vertex, bmesh_to_mesh, mesh_to_bmesh
-from .thermal_erosion_method import calculate_erosion
-from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z, ErosionStatus
+from terrain_eroder.erosions.tools import edge_get_neighbour_vertex, bmesh_to_mesh, mesh_to_bmesh
+from terrain_eroder.erosions.thermal_erosion_method import calculate_erosion
+from terrain_eroder.model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z, ErosionStatus
 
 
 class ThermalErosionSettings:

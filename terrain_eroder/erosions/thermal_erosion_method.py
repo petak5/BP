@@ -1,7 +1,7 @@
 import numpy as np
 from math import sqrt
 
-from ..model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z
+from terrain_eroder.model.types import Mesh, INDEX_ID, INDEX_X, INDEX_Y, INDEX_Z
 
 
 def calculate_erosion(mesh: Mesh, T: float, C: float) -> dict[int, float]:

@@ -1,6 +1,6 @@
 import bpy
 
-from ..properties.terrain_properties import TerrainProperties
+from terrain_eroder.properties.terrain_properties import TerrainProperties
 
 
 class AnimateObjectOperator(bpy.types.Operator):
@@ -28,9 +28,11 @@ class AnimateObjectOperator(bpy.types.Operator):
 class CreatorPanel(bpy.types.Panel):
     bl_label = "Terrain Creator"
     bl_idname = "OBJECT_PT_terrain_creator"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = "objectmode"
     bl_category = "Eroder"
+    bl_options = { "DEFAULT_CLOSED" }
 
     def draw(self, context):
         properties: TerrainProperties = context.scene.terrain_properties

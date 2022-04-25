@@ -1,7 +1,7 @@
 import numpy as np
-
 from bmesh.types import BMesh, BMVert, BMEdge
-from ..model.types import Mesh, INDEX_X, INDEX_Y, INDEX_Z
+
+from terrain_eroder.model.types import Mesh, INDEX_X, INDEX_Y, INDEX_Z
 
 
 # Returns neighbour vertex from edge at index i

@@ -2,8 +2,8 @@ import bpy
 from bmesh.types import BMesh, BMVert
 import numpy as np
 
-from .tools import edge_get_neighbour_vertex
-from ..model.types import ErosionStatus
+from terrain_eroder.erosions.tools import edge_get_neighbour_vertex
+from terrain_eroder.model.types import ErosionStatus
 
 
 class HydraulicErosionSettings:

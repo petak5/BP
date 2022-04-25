@@ -1,13 +1,14 @@
 import bpy
 
-from ..properties.erosion_properties import ErosionProperties
+from terrain_eroder.properties.erosion_properties import ErosionProperties
 
 
 class ErosionPanel(bpy.types.Panel):
     bl_label = "Terrain Erosion"
     bl_idname = "OBJECT_PT_terrain_erosion"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = "objectmode"
     bl_category = "Eroder"
 
     def draw(self, context: bpy.types.Context):

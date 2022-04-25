@@ -3,12 +3,12 @@ import bmesh
 from datetime import datetime
 from threading import Thread
 
-from ..erosions.thermal_erosion import thermal_erosion_old, ThermalErosionSettings
-from ..erosions.hydraulic_erosion import hydraulic_erosion, HydraulicErosionSettings
-from ..erosions.hydraulic_erosion_pb import hydraulic_erosion_pb, HydraulicErosionPBSettings
-from ..properties.erosion_properties import ErosionProperties
-from ..erosions.tools import bmesh_to_mesh, mesh_to_bmesh
-from ..model.types import Mesh, ErosionStatus
+from terrain_eroder.erosions.thermal_erosion import thermal_erosion_old, ThermalErosionSettings
+from terrain_eroder.erosions.hydraulic_erosion import hydraulic_erosion, HydraulicErosionSettings
+from terrain_eroder.erosions.hydraulic_erosion_pb import hydraulic_erosion_pb, HydraulicErosionPBSettings
+from terrain_eroder.properties.erosion_properties import ErosionProperties
+from terrain_eroder.erosions.tools import bmesh_to_mesh, mesh_to_bmesh
+from terrain_eroder.model.types import Mesh, ErosionStatus
 
 
 class ErosionOperator(bpy.types.Operator):

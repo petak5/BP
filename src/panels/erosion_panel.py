@@ -89,18 +89,22 @@ class ErosionPanel(bpy.types.Panel):
 
         layout.separator()
 
-        row = layout.row()
-        row.operator(method_operator_name, icon="PLAY")
-
         if properties.is_running:
+            row = layout.row()
+            row.prop(properties, "progress", slider=True)
+
             row = layout.row()
             row.label(text="Erosion in progress", icon="SORTTIME")
 
             row = layout.row()
-            row.prop(properties, "progress")
+            row.label(text="To abort press ESC or RIGHTMOUSE")
 
             row = layout.row()
             row.label(text=f"Time elapsed: {properties.elapsed_time}", icon="TIME")
-        elif properties.last_time != "":
+        else:
             row = layout.row()
-            row.label(text=f"Last time: {properties.last_time}", icon="TIME")
+            row.operator(method_operator_name, icon="PLAY")
+
+            if properties.last_time != "":
+                row = layout.row()
+                row.label(text=f"Last time: {properties.last_time}", icon="TIME")

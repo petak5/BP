@@ -65,8 +65,6 @@ class ErosionOperator(bpy.types.Operator):
         time_total = datetime.now() - self.__start_time
         minutes, seconds = divmod(time_total.seconds, 60)
         miliseconds, _ = divmod(time_total.microseconds, 1000)
-        if miliseconds == 0:
-            print("WTF 0?")
         properties.elapsed_time = "{:02d}:{:02d}.{:03d}".format(minutes, seconds, miliseconds)
 
 

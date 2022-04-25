@@ -3,7 +3,10 @@ print("Executing __init__.py...")
 import bpy
 from bpy.props import PointerProperty
 
-from .panels.my_plugin_panel import classes
+from .panels.my_plugin_panel import MyPluginPanel, AnimateObjectOperator, WiggleObjectOperator
+from .panels.erosion_panel import ErosionPanel
+from .operators.create_terrain_operator import CreateTerrainOperator
+from .operators.erosion_operator import ErosionOperator
 from .properties.erosion_properties import ErosionProperties
 
 
@@ -16,6 +19,18 @@ bl_info = {
     "description": "Add-on for terrain erosion",
     "category": "3D View"
 }
+
+
+# Classes inheriting from Blender that need to be (de-)activated
+classes = (
+    ErosionProperties,
+    CreateTerrainOperator,
+    AnimateObjectOperator,
+    WiggleObjectOperator,
+    ErosionOperator,
+    MyPluginPanel,
+    ErosionPanel
+)
 
 
 def register():

@@ -2,12 +2,6 @@ import bpy
 import bmesh
 import random
 
-from ..properties.erosion_properties import ErosionProperties
-from ..operators.create_terrain_operator import CreateTerrainOperator
-from ..operators.erosion_operator import ErosionOperator
-
-from .erosion_panel import ErosionPanel
-
 
 class AnimateObjectOperator(bpy.types.Operator):
     bl_label = "Animate Object"
@@ -80,15 +74,3 @@ class MyPluginPanel(bpy.types.Panel):
 
         row = layout.row()
         row.operator("object.wiggle_object_operator")
-
-
-# Classes inheriting from Blender that need to be (de-)activated
-classes = (
-    ErosionProperties,
-    CreateTerrainOperator,
-    AnimateObjectOperator,
-    WiggleObjectOperator,
-    ErosionOperator,
-    MyPluginPanel,
-    ErosionPanel
-)

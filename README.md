@@ -11,7 +11,7 @@ Blender plugin for terrain erosion
 - Create a symlink to `terrain_eroder/` folder from Blender's addons folder
 ### macOS
 - `cd /Users/<user>/Library/Application Support/Blender/<blender-version>/scripts/addons/`
-- `ln -s terrain_eroder <path-to-terrain-eroder>`
+- `ln -s <path-to-terrain-eroder> terrain_eroder`
 ### Windows (cmd as Administrator)
 - `cd c:\Users\<user>\AppData\Roaming\Blender Foundation\Blender\<blender-version>\scripts\addons\`
-- `mklink /D terrain_eroder <path-to-terrain-eroder>` 
+- `mklink /D terrain_eroder <path-to-terrain-eroder>`

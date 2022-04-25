@@ -1,6 +1,6 @@
 import bpy
-import bmesh
-import random
+
+from ..properties.terrain_properties import TerrainProperties
 
 
 class AnimateObjectOperator(bpy.types.Operator):
@@ -25,35 +25,7 @@ class AnimateObjectOperator(bpy.types.Operator):
             active_obj.keyframe_insert("location")
 
 
-class WiggleObjectOperator(bpy.types.Operator):
-    bl_label = "Wiggle Object"
-    bl_idname = "object.wiggle_object_operator"
-
-    @classmethod
-    def poll(cls, context):
-        return context.active_object is not None
-
-    def execute(self, context):
-        self.wiggle_object(context)
-        return {'FINISHED'}
-
-    def wiggle_object(self, context):
-        active_obj = context.active_object
-        active_mesh = active_obj.data
-        my_bmesh = bmesh.new()
-        my_bmesh.from_mesh(active_mesh)
-
-        for v in my_bmesh.verts:
-            delta = random.random() % 0.5
-            if random.random() > 0.5:
-                delta = -delta
-            v.co.z += delta
-
-        my_bmesh.to_mesh(active_mesh)
-        my_bmesh.free()
-
-
-class MyPluginPanel(bpy.types.Panel):
+class CreatorPanel(bpy.types.Panel):
     bl_label = "Terrain Creator"
     bl_idname = "OBJECT_PT_terrain_creator"
     bl_space_type = 'VIEW_3D'
@@ -61,16 +33,77 @@ class MyPluginPanel(bpy.types.Panel):
     bl_category = "Eroder"
 
     def draw(self, context):
+        properties: TerrainProperties = context.scene.terrain_properties
         layout = self.layout
 
         row = layout.row()
-        row.label(text="Create new terrain")
+        row.label(text="Noise settings")
 
         row = layout.row()
-        row.operator("object.create_terrain_operator")
+        row.prop(properties, "random_method")
 
-        if len(context.selected_objects) <= 0:
-            return
+        if properties.random_method in ["FRACTAL", "HETERO_TERRAIN", "HYBRID_MULTI_FRACTAL", "MULTI_FRACTAL", "NOISE", "RIDGED_MULTI_FRACTAL", "TURBULENCE"]:
+            row = layout.row()
+            row.prop(properties, "noise_basis")
+
+        if properties.random_method in ["FRACTAL", "HETERO_TERRAIN", "HYBRID_MULTI_FRACTAL", "MULTI_FRACTAL", "RIDGED_MULTI_FRACTAL"]:
+            row = layout.row()
+            row.prop(properties, "h")
+            row = layout.row()
+            row.prop(properties, "lacunarity")
+
+        if properties.random_method in ["FRACTAL", "HETERO_TERRAIN", "HYBRID_MULTI_FRACTAL", "MULTI_FRACTAL", "RIDGED_MULTI_FRACTAL", "TURBULENCE"]:
+            row = layout.row()
+            row.prop(properties, "octaves")
+
+        if properties.random_method in ["HETERO_TERRAIN", "HYBRID_MULTI_FRACTAL", "RIDGED_MULTI_FRACTAL"]:
+            row = layout.row()
+            row.prop(properties, "offset")
+
+        if properties.random_method in ["HYBRID_MULTI_FRACTAL", "RIDGED_MULTI_FRACTAL"]:
+            row = layout.row()
+            row.prop(properties, "gain")
+
+        if properties.random_method in ["TURBULENCE"]:
+            row = layout.row()
+            row.prop(properties, "hard")
+            row = layout.row()
+            row.prop(properties, "amplitude_scale")
+            row = layout.row()
+            row.prop(properties, "frequency_scale")
+
+        if properties.random_method in ["VARIABLE_LACUNARITY"]:
+            row = layout.row()
+            row.prop(properties, "distortion")
+            row = layout.row()
+            row.prop(properties, "noise_type_1")
+            row = layout.row()
+            row.prop(properties, "noise_type_2")
+
+        layout.separator()
 
         row = layout.row()
-        row.operator("object.wiggle_object_operator")
+        row.label(text="General noise settings")
+
+        row = layout.row()
+        row.prop(properties, "seed")
+        row = layout.row()
+        row.prop(properties, "noise_scale")
+
+        layout.separator()
+
+        row = layout.row()
+        row.label(text="Mesh settings")
+
+        row = layout.row()
+        row.prop(properties, "size_x")
+        row.prop(properties, "size_y")
+
+        row = layout.row()
+        row.prop(properties, "step_x")
+        row.prop(properties, "step_y")
+
+        layout.separator()
+
+        row = layout.row()
+        row.operator("object.create_terrain_operator", icon="SCENE_DATA")

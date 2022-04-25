@@ -23,7 +23,6 @@ class ErosionProperties(bpy.types.PropertyGroup):
         ("THERMAL", "Thermal", "Thermal Erosion"),
         ("HYDRAULIC", "Hydraulic", "Hydraulic Erosion"),
         ("HYDRAULIC-PB", "Hydraulic Particle Based", "Hydraulic Erosion - Particle Based")
-
     ]
     erosion_method: EnumProperty(
         items=_erosion_method_items,

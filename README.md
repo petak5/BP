@@ -1,7 +1,7 @@
 # Terrain eroder
 Blender plugin for terrain erosion
 
-<img src="https://github.com/petak5/BP/master/resources/screenshot.png">
+<img width=600 src="https://github.com/petak5/BP/blob/master/resources/screenshot.png?raw=true">
 
 # Installation
 

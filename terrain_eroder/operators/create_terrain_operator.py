@@ -14,10 +14,14 @@ class CreateTerrainOperator(bpy.types.Operator):
         return {'FINISHED'}
 
     def create_terrain(self, context: bpy.types.Context):
-        new_mesh: bpy.types.Mesh = bpy.data.meshes.new("New Terrain Mesh")
-        new_obj: bpy.types.Object = bpy.data.objects.new("New Terrain", new_mesh)
+        new_mesh: bpy.types.Mesh = bpy.data.meshes.new("Terrain Mesh")
+        new_obj: bpy.types.Object = bpy.data.objects.new("Terrain", new_mesh)
 
         context.scene.collection.objects.link(new_obj)
+
+        # Select the object
+        new_obj.select_set(True)
+        context.view_layer.objects.active = new_obj
 
         properties: TerrainProperties = context.scene.terrain_properties
 

@@ -51,6 +51,7 @@ class ErosionOperator(bpy.types.Operator):
             return {'CANCELLED'}
         elif event.type in ['TIMER']:
             self.update_progress(context)
+            self.check_thread()
 
             if not self.erosion_status.is_running:
                 self.stop_erosion(context)
@@ -67,6 +68,12 @@ class ErosionOperator(bpy.types.Operator):
         minutes, seconds = divmod(time_total.seconds, 60)
         miliseconds, _ = divmod(time_total.microseconds, 1000)
         properties.elapsed_time = "{:02d}:{:02d}.{:03d}".format(minutes, seconds, miliseconds)
+
+
+    # Check if thread is still running, in case an exception occurs
+    def check_thread(self):
+        if not self.thread.is_alive():
+            self.erosion_status.is_running = False
 
 
     def stop_erosion(self, context: bpy.types.Context, abort=False):

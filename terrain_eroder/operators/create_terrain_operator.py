@@ -14,14 +14,16 @@ class CreateTerrainOperator(bpy.types.Operator):
         return {'FINISHED'}
 
     def create_terrain(self, context: bpy.types.Context):
-        new_mesh: bpy.types.Mesh = bpy.data.meshes.new("Terrain Mesh")
-        new_obj: bpy.types.Object = bpy.data.objects.new("Terrain", new_mesh)
+        terrain_mesh: bpy.types.Mesh = bpy.data.meshes.new("Terrain")
+        terrain_obj: bpy.types.Object = bpy.data.objects.new("Terrain", terrain_mesh)
+        terrain_obj.type
 
-        context.scene.collection.objects.link(new_obj)
+        view_layer = bpy.context.view_layer
+        view_layer.active_layer_collection.collection.objects.link(terrain_obj)
 
         # Select the object
-        new_obj.select_set(True)
-        context.view_layer.objects.active = new_obj
+        terrain_obj.select_set(True)
+        view_layer.objects.active = terrain_obj
 
         properties: TerrainProperties = context.scene.terrain_properties
 
@@ -62,7 +64,7 @@ class CreateTerrainOperator(bpy.types.Operator):
                 v_y += noise_scale
             v_x += noise_scale
 
-        new_mesh.from_pydata(vertices, [], polygons)
+        terrain_mesh.from_pydata(vertices, [], polygons)
 
 
     def __get_noise_lambda(self, properties: TerrainProperties):

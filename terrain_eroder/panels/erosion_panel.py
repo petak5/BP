@@ -14,12 +14,14 @@ class ErosionPanel(bpy.types.Panel):
     def draw(self, context: bpy.types.Context):
         layout = self.layout
 
-        if len(context.selected_objects) <= 0:
+        view_layer = bpy.context.view_layer
+        # Check active object and its type (must be MESH)
+        if len(view_layer.objects.selected) <= 0 or view_layer.objects.active is None or view_layer.objects.active.type != "MESH":
             row = layout.row()
-            row.label(text="Select an object for erosion", icon="INFO")
+            row.label(text="Select a mesh object for erosion", icon="INFO")
             return
 
-        obj = context.selected_objects[0]
+        obj = view_layer.objects.active
         properties: ErosionProperties = context.scene.erosion_properties
 
         row = layout.row()

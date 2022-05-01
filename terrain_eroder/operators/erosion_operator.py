@@ -29,7 +29,8 @@ class ErosionOperator(bpy.types.Operator):
 
     @classmethod
     def poll(self, context: bpy.types.Context):
-        return context.selected_objects and context.edit_object is None and not self.erosion_status.is_running
+        view_layer = bpy.context.view_layer
+        return view_layer.objects.active is not None and view_layer.objects.active.type == "MESH" and not self.erosion_status.is_running
 
 
     def invoke(self, context: bpy.types.Context, event: bpy.types.Event):

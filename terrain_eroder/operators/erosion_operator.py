@@ -3,12 +3,11 @@ import bmesh
 from datetime import datetime
 from threading import Thread
 
-from terrain_eroder.erosions.thermal_erosion import thermal_erosion_old, ThermalErosionSettings
+from terrain_eroder.erosions.thermal_erosion import thermal_erosion, ThermalErosionSettings
 from terrain_eroder.erosions.hydraulic_erosion import hydraulic_erosion, HydraulicErosionSettings
 from terrain_eroder.erosions.hydraulic_erosion_pb import hydraulic_erosion_pb, HydraulicErosionPBSettings
 from terrain_eroder.properties.erosion_properties import ErosionProperties
-from terrain_eroder.erosions.tools import bmesh_to_mesh, mesh_to_bmesh
-from terrain_eroder.model.types import Mesh, ErosionStatus
+from terrain_eroder.erosions.erosion_status import ErosionStatus
 
 
 class ErosionOperator(bpy.types.Operator):
@@ -18,9 +17,7 @@ class ErosionOperator(bpy.types.Operator):
 
     erosion_status: ErosionStatus = ErosionStatus()
     thread: Thread = None
-    mesh: Mesh = None
     my_bmesh: bmesh.types.BMesh = None
-    use_custom_mesh_object = False
 
     __start_time: datetime = None
 
@@ -111,7 +108,12 @@ class ErosionOperator(bpy.types.Operator):
         self.my_bmesh.from_mesh(active_mesh)
         self.my_bmesh.verts.ensure_lookup_table()
 
-        self.mesh = bmesh_to_mesh(self.my_bmesh)
+        """ Debug """
+        temp_sum = 0
+        for i in range(len(self.my_bmesh.verts)):
+            temp_sum += self.my_bmesh.verts[i].co.z
+        print(f"Before = {temp_sum}")
+        """ Debug end """
 
         settings = None
         target = None
@@ -125,7 +127,7 @@ class ErosionOperator(bpy.types.Operator):
             settings.max_slope        = properties.th_max_slope
             settings.erosion_strength = properties.th_erosion_strength
 
-            target = thermal_erosion_old
+            target = thermal_erosion
             args = [self.my_bmesh, settings]
         # Hydraulic erosion - grid based
         elif properties.erosion_method == "HYDRAULIC":
@@ -157,8 +159,7 @@ class ErosionOperator(bpy.types.Operator):
             settings.erosion_strength           = properties.hypb_erosion_strength
 
             target = hydraulic_erosion_pb
-            args = [self.mesh, settings]
-            self.use_custom_mesh_object = True
+            args = [self.my_bmesh, settings]
 
         properties.progress = 0
         properties.is_running = True
@@ -171,11 +172,15 @@ class ErosionOperator(bpy.types.Operator):
 
     # Convert Mesh back to Object
     def finish_erosion(self, context: bpy.types.Context):
-        obj: bpy.types.Object = context.active_object
+        """ Debug """
+        temp_sum = 0
+        for i in range(len(self.my_bmesh.verts)):
+            temp_sum += self.my_bmesh.verts[i].co.z
+        print(f"After  = {temp_sum}")
+        """ Debug end """
 
+        obj: bpy.types.Object = context.active_object
         active_mesh = obj.data
-        if self.use_custom_mesh_object:
-            mesh_to_bmesh(self.mesh, self.my_bmesh)
 
         self.my_bmesh.to_mesh(active_mesh)
         self.my_bmesh.free()

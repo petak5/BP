@@ -1,9 +1,8 @@
 import bpy
-from bmesh.types import BMesh, BMVert
+from bmesh.types import BMesh, BMVert, BMEdge
 import numpy as np
 
-from terrain_eroder.erosions.tools import edge_get_neighbour_vertex
-from terrain_eroder.model.types import ErosionStatus
+from terrain_eroder.erosions.erosion_status import ErosionStatus
 
 
 class HydraulicErosionSettings:
@@ -91,8 +90,10 @@ def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings, erosion_s
             a_count = 0
 
             # Count how many neighbour cells are lower than current cell and calculate their total delta and height
-            for j in range(len(v.link_edges)):
-                v_neigh = edge_get_neighbour_vertex(v, j)
+            for le in v.link_edges:
+                le: BMEdge = le
+                v_neigh = le.other_vert(v)
+                # v_neigh = edge_get_neighbour_vertex(v, j)
 
                 a_neigh = v_neigh.co.z + w[v_neigh.index]
                 # Only lower cells are involved in the distribution
@@ -113,8 +114,10 @@ def hydraulic_erosion(mesh: BMesh, settings: HydraulicErosionSettings, erosion_s
             a_delta = a - a_average
 
             # Calculate water and sediment distribution
-            for j in range(len(v.link_edges)):
-                v_neigh = edge_get_neighbour_vertex(v, j)
+            for le in v.link_edges:
+                le: BMEdge = le
+                v_neigh = le.other_vert(v)
+                # v_neigh = edge_get_neighbour_vertex(v, j)
 
                 # Index of neighbour cell
                 i_neigh = v_neigh.index

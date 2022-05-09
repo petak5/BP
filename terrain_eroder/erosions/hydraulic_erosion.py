@@ -1,4 +1,3 @@
-import bpy
 from bmesh.types import BMesh, BMVert, BMEdge
 import numpy as np
 

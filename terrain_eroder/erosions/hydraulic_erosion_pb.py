@@ -1,6 +1,5 @@
 from math import sqrt, pow
 from bmesh.types import BMesh, BMVert, BMEdge
-import numpy as np
 from datetime import datetime
 import random
 
@@ -38,10 +37,6 @@ def hydraulic_erosion_pb(mesh: BMesh, settings: HydraulicErosionPBSettings, eros
             # No neighbours => skip to next drop
             if len(drop_position.link_edges) == 0:
                 break
-            # neigh_ids = np.where(mesh.edges[drop_position[INDEX_ID], : ] == True)[0]
-            # # No neighbours => skip to next drop
-            # if len(neigh_ids) == 0:
-            #     break
 
             lowest_neigh = drop_position.link_edges[0].other_vert(drop_position)
             for le in drop_position.link_edges:
@@ -49,10 +44,6 @@ def hydraulic_erosion_pb(mesh: BMesh, settings: HydraulicErosionPBSettings, eros
                 v_neigh = le.other_vert(drop_position)
                 if v_neigh.co.z < lowest_neigh.co.z:
                     lowest_neigh = v_neigh
-            # lowest_neigh_id = neigh_ids[0]
-            # for k in neigh_ids:
-            #     if mesh.vertices[k][INDEX_Z] < mesh.vertices[lowest_neigh_id][INDEX_Z]:
-            #         lowest_neigh_id = k
 
             # drop_speed += erosion_strength / drop_size
             height_delta = lowest_neigh.co.z - drop_position.co.z
@@ -60,11 +51,11 @@ def hydraulic_erosion_pb(mesh: BMesh, settings: HydraulicErosionPBSettings, eros
                 # Move drop
                 drop_position_old = drop_position
                 drop_position = lowest_neigh
-                # print(height_delta)
+
                 c = -height_delta/2 * drop_speed * drop_size
-                # print(f"C={c}")
+
                 c2 = c - drop_sediment
-                # print(f"C2={c2}")
+
                 drop_sediment += c2
                 drop_position_old.co.z -= c2
             # else:

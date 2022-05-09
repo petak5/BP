@@ -1,4 +1,3 @@
-import bpy
 from bmesh.types import BMesh, BMVert, BMEdge
 import numpy as np
 from math import sqrt
@@ -38,7 +37,6 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
             for le in v.link_edges:
                 le: BMEdge = le
                 v_neigh = le.other_vert(v)
-                # v_neigh = edge_get_neighbour_vertex(v, j)
 
                 # height delta
                 d = v.co.z - v_neigh.co.z
@@ -56,7 +54,6 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
             for le in v.link_edges:
                 le: BMEdge = le
                 v_neigh = le.other_vert(v)
-                # v_neigh = edge_get_neighbour_vertex(v, j)
 
                 # height delta
                 d = v.co.z - v_neigh.co.z

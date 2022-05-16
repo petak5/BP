@@ -1,5 +1,3 @@
-print("Executing __init__.py...")
-
 import bpy
 from bpy.props import PointerProperty
 

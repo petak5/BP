@@ -31,7 +31,6 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
             v = mesh.verts[i]
 
             d_total = 0
-            d_max = 0
             angle_max = 0
 
             for le in v.link_edges:
@@ -41,15 +40,21 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
                 # height delta
                 d = v.co.z - v_neigh.co.z
                 xy_distance = sqrt(pow(v.co.x - v_neigh.co.x, 2) + pow(v.co.y - v_neigh.co.y, 2))
-                angle = d / xy_distance
+                if xy_distance == 0:
+                    if d >= 0:
+                        angle = 90
+                    else:
+                        angle = -90
+                else:
+                    angle = d / xy_distance
 
                 if angle > T:
                     d_total += d
 
                     if angle > angle_max:
                         angle_max = angle
-                    if d > d_max:
-                        d_max = d
+
+            angle_diff_ratio = (angle_max - T) / 90
 
             for le in v.link_edges:
                 le: BMEdge = le
@@ -58,11 +63,16 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
                 # height delta
                 d = v.co.z - v_neigh.co.z
                 xy_distance = sqrt(pow(v.co.x - v_neigh.co.x, 2) + pow(v.co.y - v_neigh.co.y, 2))
-                angle = d / xy_distance
+                if xy_distance == 0:
+                    if d >= 0:
+                        angle = 90
+                    else:
+                        angle = -90
+                else:
+                    angle = d / xy_distance
 
                 if angle > T:
-                    # move_by = C * (d_max - T) * (d / d_total)
-                    move_by = angle * C * (d / d_total)
+                    move_by = C * angle_diff_ratio * (d / d_total)
 
                     delta[v_neigh.index] += move_by
                     delta[v.index] -= move_by

@@ -17,6 +17,7 @@ class ErosionOperator(bpy.types.Operator):
 
     erosion_status: ErosionStatus = ErosionStatus()
     thread: Thread = None
+    active_object: bpy.types.Object = None
     my_bmesh: bmesh.types.BMesh = None
 
     __start_time: datetime = None
@@ -102,8 +103,8 @@ class ErosionOperator(bpy.types.Operator):
 
 
     def start_erosion(self, context: bpy.types.Context):
-        obj: bpy.types.Object = context.active_object
-        active_mesh = obj.data
+        self.active_object = context.active_object
+        active_mesh = self.active_object.data
         self.my_bmesh = bmesh.new()
         self.my_bmesh.from_mesh(active_mesh)
         self.my_bmesh.verts.ensure_lookup_table()
@@ -179,10 +180,12 @@ class ErosionOperator(bpy.types.Operator):
         print(f"After  = {temp_sum}")
         """ Debug end """
 
-        obj: bpy.types.Object = context.active_object
-        active_mesh = obj.data
+        active_mesh = self.active_object.data
 
         self.my_bmesh.to_mesh(active_mesh)
         self.my_bmesh.free()
+
+        self.active_object = None
+        self.my_bmesh = None
 
         context.area.tag_redraw()

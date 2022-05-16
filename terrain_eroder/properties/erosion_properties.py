@@ -64,7 +64,7 @@ class ErosionProperties(bpy.types.PropertyGroup):
     ###################
     th_iterations: IntProperty(
         name="Iterations",
-        default=100,
+        default=50,
         min=1,
         description="Number of erosion iterations"
     )
@@ -72,12 +72,12 @@ class ErosionProperties(bpy.types.PropertyGroup):
         name="Max Slope",
         default=30,
         min=0,
-        max=100,
+        max=90,
         description="Maximum Slope Angle after which soil starts to slide down"
     )
     th_erosion_strength: FloatProperty(
         name="Erosion Strength",
-        default=0.001,
+        default=0.5,
         min=0.000001,
         max=1,
         description="Affects how much soil is moved"

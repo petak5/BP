@@ -24,6 +24,8 @@ class ErosionOperator(bpy.types.Operator):
 
     __timer: bpy.types.Timer = None
 
+    __DEBUG: bool = False
+
 
     @classmethod
     def poll(self, context: bpy.types.Context):
@@ -110,10 +112,11 @@ class ErosionOperator(bpy.types.Operator):
         self.my_bmesh.verts.ensure_lookup_table()
 
         """ Debug """
-        temp_sum = 0
-        for i in range(len(self.my_bmesh.verts)):
-            temp_sum += self.my_bmesh.verts[i].co.z
-        print(f"Before = {temp_sum}")
+        if self.__DEBUG:
+            temp_sum = 0
+            for i in range(len(self.my_bmesh.verts)):
+                temp_sum += self.my_bmesh.verts[i].co.z
+            print(f"Before = {temp_sum}")
         """ Debug end """
 
         settings = None
@@ -143,7 +146,7 @@ class ErosionOperator(bpy.types.Operator):
                 # vg_idx = obj.vertex_groups.active_index
                 # indices: list[int] = [ v.index for v in obj.data.vertices if vg_idx in [ vg.group for vg in v.groups ] ]
                 indices: list[int] = []
-                for v in obj.data.vertices:
+                for v in self.active_object.data.vertices:
                     if len(v.groups) > 0:
                         indices.append(v.index)
                 settings.selected_vertex_indices = indices
@@ -174,10 +177,11 @@ class ErosionOperator(bpy.types.Operator):
     # Convert Mesh back to Object
     def finish_erosion(self, context: bpy.types.Context):
         """ Debug """
-        temp_sum = 0
-        for i in range(len(self.my_bmesh.verts)):
-            temp_sum += self.my_bmesh.verts[i].co.z
-        print(f"After  = {temp_sum}")
+        if self.__DEBUG:
+            temp_sum = 0
+            for i in range(len(self.my_bmesh.verts)):
+                temp_sum += self.my_bmesh.verts[i].co.z
+            print(f"After  = {temp_sum}")
         """ Debug end """
 
         active_mesh = self.active_object.data

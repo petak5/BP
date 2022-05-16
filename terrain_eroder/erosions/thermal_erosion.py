@@ -33,12 +33,19 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
             d_total = 0
             angle_max = 0
 
+            # Values of d and angle are saved to avoid computing it twice
+            ds = np.zeros(len(v.link_edges), dtype=float)
+            angles = np.zeros(len(v.link_edges), dtype=float)
+
+            i = 0
             for le in v.link_edges:
                 le: BMEdge = le
                 v_neigh = le.other_vert(v)
 
                 # height delta
                 d = v.co.z - v_neigh.co.z
+                ds[i] = d
+
                 xy_distance = sqrt(pow(v.co.x - v_neigh.co.x, 2) + pow(v.co.y - v_neigh.co.y, 2))
                 if xy_distance == 0:
                     if d >= 0:
@@ -47,35 +54,32 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
                         angle = -90
                 else:
                     angle = d / xy_distance
+                angles[i] = angle
 
                 if angle > T:
                     d_total += d
 
                     if angle > angle_max:
                         angle_max = angle
+                i += 1
 
             angle_diff_ratio = (angle_max - T) / 90
 
+            i = 0
             for le in v.link_edges:
                 le: BMEdge = le
                 v_neigh = le.other_vert(v)
 
                 # height delta
-                d = v.co.z - v_neigh.co.z
-                xy_distance = sqrt(pow(v.co.x - v_neigh.co.x, 2) + pow(v.co.y - v_neigh.co.y, 2))
-                if xy_distance == 0:
-                    if d >= 0:
-                        angle = 90
-                    else:
-                        angle = -90
-                else:
-                    angle = d / xy_distance
+                d = ds[i]
+                angle = angles[i]
 
                 if angle > T:
                     move_by = C * angle_diff_ratio * (d / d_total)
 
                     delta[v_neigh.index] += move_by
                     delta[v.index] -= move_by
+                i += 1
 
         for i in range(len(mesh.verts)):
             v = mesh.verts[i]

@@ -12,13 +12,10 @@ class ThermalErosionSettings:
 
 
 def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_status: ErosionStatus):
-    # Grid size
-    # N = 50
-    # Talus threshold
-    # T = 4/N
-    # T = 0.3
-    # C = 0.001
+
+    # Talus angle - slopes above this angle slide downhill
     T = settings.max_slope / 100
+    # Erosion strength - determines how much material is moved
     C = settings.erosion_strength
 
     iterations = settings.iterations
@@ -63,6 +60,8 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
                         angle_max = angle
                 i += 1
 
+            # The difference of maximum angle from neighbouring cells and talus angle,
+            # divided by 90 resulting in values from the range <0, 1>
             angle_diff_ratio = (angle_max - T) / 90
 
             i = 0
@@ -75,12 +74,14 @@ def thermal_erosion(mesh: BMesh, settings: ThermalErosionSettings, erosion_statu
                 angle = angles[i]
 
                 if angle > T:
+                    # The ammount of soil to be moved
                     move_by = C * angle_diff_ratio * (d / d_total)
 
                     delta[v_neigh.index] += move_by
                     delta[v.index] -= move_by
                 i += 1
 
+        # Apply changes from erosion to the mesh
         for i in range(len(mesh.verts)):
             v = mesh.verts[i]
 

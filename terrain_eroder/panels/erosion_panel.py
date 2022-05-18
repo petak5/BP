@@ -85,8 +85,8 @@ class ErosionPanel(bpy.types.Panel):
             row = layout.row()
             row.prop(properties, "hypb_drop_evaporation_intensity")
 
-            row = layout.row()
-            row.prop(properties, "hypb_erosion_strength")
+            # row = layout.row()
+            # row.prop(properties, "hypb_erosion_strength")
 
             method_operator_name = "object.erosion_operator"
 

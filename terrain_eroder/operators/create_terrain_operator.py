@@ -14,10 +14,11 @@ class CreateTerrainOperator(bpy.types.Operator):
         return {'FINISHED'}
 
     def create_terrain(self, context: bpy.types.Context):
+        # Create object and its mesh
         terrain_mesh: bpy.types.Mesh = bpy.data.meshes.new("Terrain")
         terrain_obj: bpy.types.Object = bpy.data.objects.new("Terrain", terrain_mesh)
-        terrain_obj.type
 
+        # Add object to scene
         view_layer = bpy.context.view_layer
         view_layer.active_layer_collection.collection.objects.link(terrain_obj)
 
@@ -64,6 +65,7 @@ class CreateTerrainOperator(bpy.types.Operator):
                 v_y += noise_scale
             v_x += noise_scale
 
+        # Fill mesh with polygons
         terrain_mesh.from_pydata(vertices, [], polygons)
 
 

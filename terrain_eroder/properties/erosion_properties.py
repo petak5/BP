@@ -147,7 +147,7 @@ class ErosionProperties(bpy.types.PropertyGroup):
         description="Count of how many vertices a drop can travel through in its lifetime"
     )
     hypb_drop_evaporation_intensity: FloatProperty(
-        name="Drop Evaporation Intensity",
+        name="Evaporation Intensity",
         default=0.1,
         min=0.000001,
         soft_max=1,

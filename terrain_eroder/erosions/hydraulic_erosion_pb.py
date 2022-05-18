@@ -11,7 +11,7 @@ class HydraulicErosionPBSettings:
     drop_size: float
     drop_max_steps: int
     drop_evaporation_intensity: float
-    erosion_strength: float
+    # erosion_strength: float
     # soil_solubility: float
     # sediment_capacity: float
     # Indices of selected vertices of vertex groups (if this option is selected)
@@ -23,7 +23,7 @@ def hydraulic_erosion_pb(mesh: BMesh, settings: HydraulicErosionPBSettings, eros
 
     drop_deceleration_intensity = 0.1
     drop_evaporation_intensity = settings.drop_evaporation_intensity
-    erosion_strength = settings.erosion_strength
+    # erosion_strength = settings.erosion_strength
 
     drops_count = int(len(mesh.verts) * settings.rain_intensity)
     for i in range(drops_count):

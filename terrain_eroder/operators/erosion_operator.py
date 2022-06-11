@@ -98,7 +98,10 @@ class ErosionOperator(bpy.types.Operator):
         minutes, seconds = divmod(time_total.seconds, 60)
         miliseconds, _ = divmod(time_total.microseconds, 1000)
         properties.last_time = "{:02d}:{:02d}.{:03d}".format(minutes, seconds, miliseconds)
-        print(time_total)
+        """ Debug """
+        if self.__DEBUG:
+            print(time_total)
+        """ Debug end """
 
         wm = context.window_manager
         wm.event_timer_remove(self.__timer)
@@ -160,7 +163,16 @@ class ErosionOperator(bpy.types.Operator):
             settings.drop_size                  = properties.hypb_drop_size
             settings.drop_max_steps             = properties.hypb_drop_max_steps
             settings.drop_evaporation_intensity = properties.hypb_drop_evaporation_intensity
-            settings.erosion_strength           = properties.hypb_erosion_strength
+            # settings.erosion_strength           = properties.hypb_erosion_strength
+            if properties.use_vertex_groups:
+                # Source: https://blender.stackexchange.com/a/75240 (https://blender.stackexchange.com/questions/75223/finding-vertices-in-a-vertex-group-using-blenders-python-api)
+                # vg_idx = obj.vertex_groups.active_index
+                # indices: list[int] = [ v.index for v in obj.data.vertices if vg_idx in [ vg.group for vg in v.groups ] ]
+                indices: list[int] = []
+                for v in self.active_object.data.vertices:
+                    if len(v.groups) > 0:
+                        indices.append(v.index)
+                settings.selected_vertex_indices = indices
 
             target = hydraulic_erosion_pb
             args = [self.my_bmesh, settings]

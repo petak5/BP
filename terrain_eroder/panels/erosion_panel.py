@@ -88,6 +88,11 @@ class ErosionPanel(bpy.types.Panel):
             # row = layout.row()
             # row.prop(properties, "hypb_erosion_strength")
 
+            row = layout.row()
+            row.prop(properties, "use_vertex_groups")
+            if properties.use_vertex_groups:
+                layout.template_list("UI_UL_list", "my_custom_id", obj, "vertex_groups", obj.vertex_groups, "active_index")
+
             method_operator_name = "object.erosion_operator"
 
         layout.separator()

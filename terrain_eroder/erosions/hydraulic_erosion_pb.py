@@ -15,7 +15,7 @@ class HydraulicErosionPBSettings:
     # soil_solubility: float
     # sediment_capacity: float
     # Indices of selected vertices of vertex groups (if this option is selected)
-    selected_vertex_indices: list[int] = None
+    selected_vertex_indices: list[(int, int)] = None
 
 
 def hydraulic_erosion_pb(mesh: BMesh, settings: HydraulicErosionPBSettings, erosion_status: ErosionStatus):
@@ -35,9 +35,12 @@ def hydraulic_erosion_pb(mesh: BMesh, settings: HydraulicErosionPBSettings, eros
         drop_steps_remaining = settings.drop_max_steps
         drop_speed = 0.1
         if settings.selected_vertex_indices is None:
+            drop_vertex_group_weight = None
             drop_position = mesh.verts[random.randint(0, len(mesh.verts) - 1)]
         else:
-            drop_position = mesh.verts[random.choice(settings.selected_vertex_indices)]
+            x = random.choice(settings.selected_vertex_indices)
+            drop_vertex_group_weight = x[1]
+            drop_position = mesh.verts[x[0]]
 
         for _ in range(drop_steps_remaining):
             # No neighbours => skip to next drop
@@ -62,6 +65,9 @@ def hydraulic_erosion_pb(mesh: BMesh, settings: HydraulicErosionPBSettings, eros
 
                 c2 = c - drop_sediment
 
+                # Use weight from vertex group if available
+                if drop_vertex_group_weight:
+                    c2 *= drop_vertex_group_weight
                 drop_sediment += c2
                 drop_position_old.co.z -= c2
             # else:

@@ -168,10 +168,13 @@ class ErosionOperator(bpy.types.Operator):
                 # Source: https://blender.stackexchange.com/a/75240 (https://blender.stackexchange.com/questions/75223/finding-vertices-in-a-vertex-group-using-blenders-python-api)
                 # vg_idx = obj.vertex_groups.active_index
                 # indices: list[int] = [ v.index for v in obj.data.vertices if vg_idx in [ vg.group for vg in v.groups ] ]
-                indices: list[int] = []
+                indices: list[(int, int)] = []
                 for v in self.active_object.data.vertices:
+                    v: bpy.types.MeshVertex = v
                     if len(v.groups) > 0:
-                        indices.append(v.index)
+                        indices.append((v.index, v.groups[0].weight))
+                        # print(f"{v} - {v.groups[0].weight}")
+
                 settings.selected_vertex_indices = indices
 
             target = hydraulic_erosion_pb
